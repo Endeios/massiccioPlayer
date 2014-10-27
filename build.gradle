@@ -1,0 +1,44 @@
+// Apply the java plugin to add support for Java,groovy,and application
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+project.ext.set('javaHome', System.env['JAVA_HOME'])
+
+project.group = "io.endeios"
+project.version = "1.0.0"
+
+mainClassName = "MassiccioRun"
+
+
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use 'maven central' for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    mavenCentral()
+}
+//we will need a shell to prototype things
+configurations {
+       shell 
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.6'
+    compile 'org.codehaus.groovyfx:groovyfx:0.4.0'
+    compile "org.codehaus.gpars:gpars:1.2.1"
+    compile "uk.co.caprica:vlcj:3.0.0"
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'org.slf4j:slf4j-simple:1.7.7'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+
+    compile files("${javaHome}/jre/lib/ext/jfxrt.jar")
+
+    testCompile "junit:junit:4.11"
+    shell 'commons-cli:commons-cli:1.2'
+    shell('jline:jline:2.11') {
+        exclude(group: 'junit', module: 'junit')
+    }
+    shell 'org.codehaus.groovy:groovy-groovysh:2.3.+'
+}

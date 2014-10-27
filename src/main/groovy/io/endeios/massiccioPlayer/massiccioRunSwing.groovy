@@ -14,11 +14,23 @@ swing = new SwingBuilder()
 
 mediaPlayerComponent  = new EmbeddedMediaPlayerComponent();
 
+about = swing.action(
+	name:		"About",
+	mnemonic: 	"A",
+	accelerator:	"F1",
+	closure:{ev->
+		println "$ev"
+	}
+)
+
+
+
 frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation:JFrame.DO_NOTHING_ON_CLOSE){
     lookAndFeel 'nimbus' 
     borderLayout()
     menuBar{
         menu(mnemonic:'f',"File"){
+		menuItem(action:about)
         }
     }        
     panel(border:BF.createEmptyBorder(5,5,5,5)){

@@ -7,16 +7,16 @@ public class FlightMessager extends Observable
 {
 	public startTime(){
 		setChanged()
-		notifyObserver(new StartTimer())
+		notifyObservers(new StartTimer())
     	}
 
 	public addPenalty(){
 		setChanged()
-		notifyObserver(new AddPenalty())
+		notifyObservers(new AddPenalty())
 	}
 	
 	public addPoint(){
 		setChanged()
-		notifyObserver(new AddPoint())
+		notifyObservers(new AddPoint())
 	}
 }

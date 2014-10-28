@@ -10,9 +10,21 @@ import javax.swing.JFrame
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+
+import io.endeios.massiccioPlayer.business.*
+import io.endeios.massiccioPlayer.model.messages.*
+
+
 swing = new SwingBuilder()
 
 mediaPlayerComponent  = new EmbeddedMediaPlayerComponent();
+
+observer = new FlightObserver()
+
+messager = new FlightMessager()
+
+messager.addObserver(observer)
+
 
 about = swing.action(
 	name:		"About",
@@ -23,33 +35,100 @@ about = swing.action(
 	}
 )
 
+addPoint = swing.action(
+    name: "Add point",
+    mnemonic: "P",
+    accelerator: "F5",
+    closure:{
+        println "Adding point"
+        messager.addPoint()
+    }
+)
+
+addPenalty = swing.action(
+    name: "Add penalty",
+    mnemonic: "D",
+    accelerator: "F6",
+    closure:{
+        println "Adding penalty"
+        messager.addPenalty()
+    }
+)
+
+startTimer = swing.action(
+    name: "Start Timer",
+    mnemonic: "S",
+    accelerator: "F2",
+    closure:{
+        println "Starting Timer"
+        messager.startTime()
+    }
+)
 
 
 frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation:JFrame.DO_NOTHING_ON_CLOSE){
     lookAndFeel 'nimbus' 
     borderLayout()
     menuBar{
-        menu(mnemonic:'f',"File"){
-		menuItem(action:about)
+        menu(mnemonic:'F',"File"){
+            menuItem("Open Video")
+            menuItem("Open Race")
+            menuItem("Save Race")
+        }
+        menu(mnemonic:'C',"Actions"){
+		    menuItem(action:startTimer)
+		    menuItem(action:addPoint)
+		    menuItem(action:addPenalty)
+        }
+        glue()
+        menu(mnemonic:'H','Help'){
+		    menuItem(action:about)
         }
     }        
     panel(border:BF.createEmptyBorder(5,5,5,5)){
         label(constraints:BL.NORTH,text:"NORTH")
     }
     vbox(constraints:BL.NORTH,id:"top"){
-        label(text:"Player")
-        button("Play",actionPerformed:{
-            def filename = "file:///home/bveronesi/Scaricati/Un.Milione.Di.Modi.Per.Morire.Nel.West.2014.1080p.BluRay.iTALiAN.AC3.5.1.640kbps.Dual.x264-TrtD_TeaM.mkv"
+        hbox(){
+            label(text:bind(source:observer,sourceProperty:"startDate",converter:
+                {v-> v?"Start time: ${v}":"Timer not Started" })
+            )
+            glue()
+            label(text:bind(source:observer,sourceProperty:"pointsCount",converter:
+                {v->v?"Points: ${v}":"Points: 0"})
+            )
+            glue()
+            label(text:bind(source:observer,sourceProperty:"penaltiesCount",converter:
+                {v->v?"Penalties: ${v}":"Penalties: 0"})
+            )
+            glue()
+            label(text:bind(source:observer,sourceProperty:"secRemaining",converter:
+                {v->
+                    def secs =(int) v / 1000
+                    def mill = v - secs * 1000 
+                    "Secs: ${secs}:${mill}"
+                })
+            )
 
+        }
+        /**
+         
+         */
+        button("Play",actionPerformed:{
+            
+            /*
+            def filename = "file:///home/bveronesi/Scaricati/Un.Milione.Di.Modi.Per.Morire.Nel.West.2014.1080p.BluRay.iTALiAN.AC3.5.1.640kbps.Dual.x264-TrtD_TeaM.mkv"
+            */
+            def filename = "file:///home/bveronesi/projects/Groovate/massiccioPlayer/GOPR0750.MP4"
             mediaPlayerComponent.getMediaPlayer().playMedia(filename);
 
         })
     }
     vbox(constraints:BL.CENTER,id:"content"){
         hbox(){
-            button(text:"+1",actionPerformed:{ev->println "$ev -> +1"})
-            button(text:"-1",actionPerformed:{ev->println "$ev -> +1"})
-            button(text:"Start",actionPerformed:{ev->println "$ev -> +1"})
+            button(action:addPoint,id:"addPointButton")
+            button(action:addPenalty,id:"addPenaltyButton")
+            button(action:startTimer,id:"startTimerButton")
         }
     }
 

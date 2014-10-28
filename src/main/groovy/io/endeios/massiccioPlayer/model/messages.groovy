@@ -11,14 +11,14 @@ public class StartTimer{
 
 public class AddPoint{
 	Date timeStamp
-	public AddPoint{
+	public AddPoint(){
 	     this.timeStamp = new Date()
 	}
 }
 
 public class AddPenalty{
 	Date timeStamp
-	public AddPenalty{
+	public AddPenalty(){
 	     this.timeStamp = new Date()
 	}
 }

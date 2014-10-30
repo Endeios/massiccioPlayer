@@ -22,6 +22,7 @@ import io.endeios.massiccioPlayer.model.messages.*
 swing = new SwingBuilder()
 
 mediaPlayerComponent  = new EmbeddedMediaPlayerComponent();
+mediaPlayer = mediaPlayerComponent.getMediaPlayer()
 
 observer = new FlightObserver()
 
@@ -94,13 +95,30 @@ openFile = swing.action(
     }
 )
 
+fiveSecsForward = swing.action(
+    name:"Five secs forward",
+    mnemonic:"F",
+    accelerator:"+",
+    closure:{
+        mediaPlayer.skip(5000)
+    }
+)
 
+
+fiveSecsBackward= swing.action(
+    name:"Five secs backward",
+    mnemonic:"B",
+    accelerator:"-",
+    closure:{
+        mediaPlayer.skip(-5000)
+    }
+)
 
 frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation:JFrame.DO_NOTHING_ON_CLOSE){
     lookAndFeel 'nimbus' 
     borderLayout()
     menuBar{
-        menu(mnemonic:'F',"File"){
+        menu(mnemonic:'i',"File"){
             menuItem(action:openFile)
             menuItem("Open Race")
             menuItem("Save Race")
@@ -109,6 +127,10 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
 		    menuItem(action:startTimer)
 		    menuItem(action:addPoint)
 		    menuItem(action:addPenalty)
+        }
+        menu(mnemonic:'V','Video Options'){
+            menuItem(action:fiveSecsForward)
+            menuItem(action:fiveSecsBackward)
         }
         glue()
         menu(mnemonic:'H','Help'){
@@ -121,39 +143,38 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
     vbox(constraints:BL.NORTH,id:"top"){
         hbox(){
             label(text:bind(source:observer,sourceProperty:"startDate",converter:
-                {v-> v?"Start time: ${v}":"Timer not Started" })
+            {v-> v?"Start time: ${v}":"Timer not Started" })
             )
             glue()
             label(text:bind(source:observer,sourceProperty:"pointsCount",converter:
-                {v->v?"Points: ${v}":"Points: 0"})
+            {v->v?"Points: ${v}":"Points: 0"})
             )
             glue()
             label(text:bind(source:observer,sourceProperty:"penaltiesCount",converter:
-                {v->v?"Penalties: ${v}":"Penalties: 0"})
+            {v->v?"Penalties: ${v}":"Penalties: 0"})
             )
             glue()
             label(text:bind(source:observer,sourceProperty:"secRemaining",converter:
-                {v->
-                    def secs =(int) v / 1000
-                    def mill = v - secs * 1000 
-                    "Secs: ${secs}:${mill}"
-                })
+            {v->
+                def secs =(int) v / 1000
+                def mill = v - secs * 1000 
+                "Secs: ${secs}:${mill}"
+            })
             )
 
         }
         /**
-         
-         */
-        button("Play",actionPerformed:{
-            
-            /*
-            def filename = "file:///home/bveronesi/Scaricati/Un.Milione.Di.Modi.Per.Morire.Nel.West.2014.1080p.BluRay.iTALiAN.AC3.5.1.640kbps.Dual.x264-TrtD_TeaM.mkv"
-            def filename = "file:///home/bveronesi/projects/Groovate/massiccioPlayer/GOPR0750.MP4"
-            mediaPlayerComponent.getMediaPlayer().playMedia(filename);
-            */
-            mediaPlayerComponent.getMediaPlayer().playMedia(movieFile.toString());
 
-        })
+         */
+        hbox(){
+            button("Play",actionPerformed:{
+
+                mediaPlayerComponent.getMediaPlayer().playMedia(movieFile.toString());
+
+            })
+            button(action:fiveSecsForward)
+            button(action:fiveSecsBackward)
+        }
     }
     vbox(constraints:BL.CENTER,id:"content"){
         hbox(){

@@ -3,6 +3,7 @@ package io.endeios.massiccioPlayer
 import java.awt.BorderLayout as BL
 import groovy.swing.SwingBuilder
 import java.awt.Color
+import java.awt.Desktop
 import javax.swing.WindowConstants as WC
 import javax.swing.BorderFactory as BF
 import javax.swing.JOptionPane
@@ -36,9 +37,27 @@ about = swing.action(
 	name:		"About",
 	mnemonic: 	"A",
 	accelerator:	"F1",
-	closure:{ev->
-		println "$ev"
-	}
+    closure:{ev->
+        def dialog = swing.dialog(
+            modal:true,
+            title:"About MassiccioPlayer",
+            size:[300,200]
+        ){
+
+            optionPane(message:"Massiccio Player V 1.0")
+
+        }
+            
+    }
+	
+)
+
+contactTeam = swing.action(
+    name:"Contact Team",
+    closure:{
+        def d = Desktop.getDesktop()
+        d.mail(new URI("mailto:andrea.gelmini@gmail.com?subject=MassiccioPlayer&body=Dear%20Andrea%20Gelmini"))
+    }
 )
 
 addPoint = swing.action(
@@ -135,6 +154,7 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
         glue()
         menu(mnemonic:'H','Help'){
 		    menuItem(action:about)
+		    menuItem(action:contactTeam)
         }
     }        
     panel(border:BF.createEmptyBorder(5,5,5,5)){

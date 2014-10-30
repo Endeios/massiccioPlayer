@@ -7,13 +7,17 @@ import javax.swing.WindowConstants as WC
 import javax.swing.BorderFactory as BF
 import javax.swing.JOptionPane
 import javax.swing.JFrame
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileFilter
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.filter.VideoFileFilter
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
+
 import io.endeios.massiccioPlayer.business.*
 import io.endeios.massiccioPlayer.model.messages.*
-
+ 
 
 swing = new SwingBuilder()
 
@@ -25,6 +29,7 @@ messager = new FlightMessager()
 
 messager.addObserver(observer)
 
+movieFile = null;
 
 about = swing.action(
 	name:		"About",
@@ -65,13 +70,38 @@ startTimer = swing.action(
     }
 )
 
+openFile = swing.action(
+    name: "Open Video",
+    mnemonic: "O",
+    accelerator: "ctrl o",
+    closure:{
+        println "Opening File"
+        def fileChooser = swing.fileChooser(
+            dialogTitle:"Choose an movie file",
+            id:"fileChooser",
+            fileSelectionMode:JFileChooser.FILES_AND_DIRECTORIES,
+            fileFilter:new FileFilter(){
+                VideoFileFilter filter = new VideoFileFilter()
+                boolean accept(File f){filter.accept(f)||f.isDirectory()}
+                String getDescription(){
+                    return "Movie Files"
+                }
+            }
+        )
+        if(fileChooser.showOpenDialog()!=JFileChooser.APPROVE_OPTION) return
+        movieFile = fileChooser.selectedFile
+        
+    }
+)
+
+
 
 frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation:JFrame.DO_NOTHING_ON_CLOSE){
     lookAndFeel 'nimbus' 
     borderLayout()
     menuBar{
         menu(mnemonic:'F',"File"){
-            menuItem("Open Video")
+            menuItem(action:openFile)
             menuItem("Open Race")
             menuItem("Save Race")
         }
@@ -118,9 +148,10 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
             
             /*
             def filename = "file:///home/bveronesi/Scaricati/Un.Milione.Di.Modi.Per.Morire.Nel.West.2014.1080p.BluRay.iTALiAN.AC3.5.1.640kbps.Dual.x264-TrtD_TeaM.mkv"
-            */
             def filename = "file:///home/bveronesi/projects/Groovate/massiccioPlayer/GOPR0750.MP4"
             mediaPlayerComponent.getMediaPlayer().playMedia(filename);
+            */
+            mediaPlayerComponent.getMediaPlayer().playMedia(movieFile.toString());
 
         })
     }

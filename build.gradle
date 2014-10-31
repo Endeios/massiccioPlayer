@@ -28,7 +28,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.6'
     compile 'org.codehaus.groovyfx:groovyfx:0.4.0'
     compile "org.codehaus.gpars:gpars:1.2.1"
-    compile "uk.co.caprica:vlcj:3.0.0"
+    compile "uk.co.caprica:vlcj:3.0.1"
     compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'org.slf4j:slf4j-simple:1.7.7'
     compile 'org.apache.commons:commons-lang3:3.3.2'

@@ -12,15 +12,24 @@ import javax.swing.JFileChooser
 import javax.swing.filechooser.FileFilter
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.filter.VideoFileFilter
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import com.sun.jna.Platform;
+import com.sun.jna.NativeLibrary
 
-
+import io.endeios.massiccioPlayer.utils.WindowsRegistry
 import io.endeios.massiccioPlayer.business.*
 import io.endeios.massiccioPlayer.model.messages.*
  
 
 swing = new SwingBuilder()
+
+if(Platform.isWindows()){
+    def vlcInstallDir = WindowsRegistry.readRegistry("HKEY_LOCAL_MACHINE\\SOFTWARE\\VideoLAN\\VLC","InstallDir")
+    def libName = RuntimeUtil.getLibVlcLibraryName()
+    NativeLibrary.addSearchPath (libName, vlcInstallDir );
+}
 
 mediaPlayerComponent  = new EmbeddedMediaPlayerComponent();
 mediaPlayer = mediaPlayerComponent.getMediaPlayer()
@@ -34,9 +43,9 @@ messager.addObserver(observer)
 movieFile = null;
 
 about = swing.action(
-	name:		"About",
-	mnemonic: 	"A",
-	accelerator:	"F1",
+    name:        "About",
+    mnemonic:     "A",
+    accelerator:    "F1",
     closure:{ev->
         def dialog = swing.dialog(
             modal:true,
@@ -49,7 +58,7 @@ about = swing.action(
         }
             
     }
-	
+    
 )
 
 contactTeam = swing.action(
@@ -143,9 +152,9 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
             menuItem("Save Race")
         }
         menu(mnemonic:'C',"Actions"){
-		    menuItem(action:startTimer)
-		    menuItem(action:addPoint)
-		    menuItem(action:addPenalty)
+            menuItem(action:startTimer)
+            menuItem(action:addPoint)
+            menuItem(action:addPenalty)
         }
         menu(mnemonic:'V','Video Options'){
             menuItem(action:fiveSecsForward)
@@ -153,8 +162,8 @@ frame = swing.frame(title:"MassiccioPlayer",size:[500,500],defaultCloseOperation
         }
         glue()
         menu(mnemonic:'H','Help'){
-		    menuItem(action:about)
-		    menuItem(action:contactTeam)
+            menuItem(action:about)
+            menuItem(action:contactTeam)
         }
     }        
     panel(border:BF.createEmptyBorder(5,5,5,5)){

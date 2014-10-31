@@ -23,7 +23,6 @@ public class WindowsRegistry
         {
             // Run reg query, then read output with StreamReader (internal class)
             def execString = "reg query \"" + location + "\" /v \"" + key + "\""
-            println "$execString"
             Process process = Runtime.getRuntime().exec(execString);
 
             StreamReader reader = new StreamReader(process.getInputStream());
